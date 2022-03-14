@@ -56,6 +56,11 @@ $ CODEGEN_BUILD_CACHE=true make grpc-codegen
 $ make
 ```
 
+## Creating CSI driver images for the volume controller
+
+Refer to the [`artifacts/csi_drivers`][csi-drivers] directory.
+
+
 ## Running the controllers on *Kubernetes*
 
 Refer to the steps until the data sharing controllers start managing a data lifetime using example data under the [`artifacts/examples`][examples] directory.
@@ -92,6 +97,7 @@ $ make distclean
 
 [codegen]: https://github.com/kubernetes/code-generator
 [kafka]: https://kafka.apache.org/
+[csi-drivers]: artifacts/csi_drivers
 [examples]: artifacts/examples
 [kafka-go]: https://github.com/segmentio/kafka-go
 [kafka-go-test]: https://github.com/segmentio/kafka-go#testing
