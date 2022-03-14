@@ -1,0 +1,24 @@
+apiVersion: lifetimes.dsc/v1alpha1
+kind: DataLifetime
+metadata:
+  name: sample-lifetime-2
+spec:
+  trigger:
+    endTime: 2023-1-02T03:03:00+09:00
+  inputData:
+  - messageQueueSubscriber:
+      messageQueueRef:
+        namespace: default
+        name: sample-message-queue-2
+    fileSystemSpec:
+      fromPersistentVolumeClaimRef:
+        namespace: default
+        name: remote-vol-2
+      fromPvcUsageControlEnabled: true
+      toPersistentVolumeClaimRef:
+        namespace: default
+        name: local-vol-2
+      allowedExecutables:
+      - cmdAbsolutePath: /bin/cat
+      - cmdAbsolutePath: /bin/bash
+        writable: true

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debian-0
+spec:
+  template:
+    spec:
+      serviceAccount: lifetime-controller-0
+      containers:
+      - name: service-container
+        securityContext:
+          runAsUser: 2000
+          runAsGroup: 2000
+        volumeMounts:
+        - name: target-data1
+          mountPath: /tmp/target1
+      - name: data-container
+        image: data-container
+        args:
+        - --datastore-addr=redis-server.dsc.svc:6379
+        env:
+        - name: K8S_LIFETIMES_NAMES
+          value: "[{\"lifetimesNames\": [\"default/sample-lifetime-0\"]}]"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DATA_CONTAINER_NAME
+          value: data-container
+        volumeMounts:
+        - name: target-data1
+          mountPath: /tmp/targets/output
+        - name: volume-controller-sock
+          mountPath: /var/run/dsc/volume-controller.sock
+      securityContext:
+        fsGroup: 2000
+      volumes:
+      - name: target-data1
+        persistentVolumeClaim:
+          claimName: remote-vol-1
+      - name: volume-controller-sock
+        hostPath:
+          path: /var/run/dsc/volume-controller.sock
+          type: Socket

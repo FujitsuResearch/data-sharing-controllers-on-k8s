@@ -1,0 +1,7 @@
+resources:
+- daemonset.yaml
+
+images:
+- name: volumectl
+  # Specify the name of your volumectl in a docker registry
+  newName: 

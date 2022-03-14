@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policy-validator
+  namespace: dsc
+  labels:
+    deployment: policy-validator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: policy-validator-pod
+  template:
+    metadata:
+      labels:
+        app: policy-validator-pod
+    spec:
+      serviceAccount: policy-validator
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1234
+      containers:
+      - name: policy-validator
+        image: policy-validator
+        args:
+        - --datastore-addr=redis-server.dsc.svc:6379
+        ports:
+        - containerPort: 8443
+          name: webhook-api
+        volumeMounts:
+        - name: webhook-tls-certs
+          mountPath: /var/run/secrets/tls
+          readOnly: true
+      volumes:
+      - name: webhook-tls-certs

@@ -1,0 +1,8 @@
+{
+	"mountPoint1": {
+		"paths": [
+			"/usr/bin/x",
+			"/usr/local/bin/y"
+		]
+	}
+}

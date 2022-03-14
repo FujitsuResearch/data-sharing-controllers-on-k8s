@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debian-1
+spec:
+  template:
+    spec:
+      serviceAccount: lifetime-controller-1
+      containers:
+      - name: service-container
+        securityContext:
+          runAsUser: 2000
+          runAsGroup: 2000
+        volumeMounts:
+        - name: target-data1
+          mountPath: /tmp/target1
+        - name: target-data2
+          mountPath: /tmp/target2
+      - name: data-container
+        image: data-container
+        args:
+        - --datastore-addr=redis-server.dsc.svc:6379
+        env:
+        - name: K8S_LIFETIMES_NAMES
+          value: "[{\"kubeConfig\": \"/tmp/kube/config\", \"lifetimesNames\": [\"default/sample-lifetime-1\"]}]"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DATA_CONTAINER_NAME
+          value: data-container
+        volumeMounts:
+        - name: kubeconfig
+          mountPath: /tmp/kube
+        - name: target-data1
+          mountPath: /tmp/targets/input
+        - name: target-data2
+          mountPath: /tmp/targets/output
+        - name: volume-controller-sock
+          mountPath: /var/run/dsc/volume-controller.sock
+      securityContext:
+        fsGroup: 2000
+      volumes:
+      - name: kubeconfig
+        persistentVolumeClaim:
+          claimName: kubeconfig-vol-1
+      - name: target-data1
+        persistentVolumeClaim:
+          claimName: local-vol-1
+      - name: target-data2
+        persistentVolumeClaim:
+          claimName: remote-vol-2
+      - name: volume-controller-sock
+        hostPath:
+          path: /var/run/dsc/volume-controller.sock
+          type: Socket

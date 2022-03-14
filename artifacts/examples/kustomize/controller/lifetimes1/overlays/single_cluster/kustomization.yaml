@@ -1,0 +1,10 @@
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deployment.yaml
+
+images:
+- name: data-container
+  # Specify the name of your data container in a docker registry
+  newName: 

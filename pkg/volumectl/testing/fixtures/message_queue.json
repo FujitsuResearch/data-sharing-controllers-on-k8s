@@ -1,0 +1,9 @@
+{
+	"brokers": [
+		"127.0.0.1:9093"
+	],
+	"user": "user",
+	"password": "pwd",
+	"topic": "topic",
+	"compression_codec": "none"
+}

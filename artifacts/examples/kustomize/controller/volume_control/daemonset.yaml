@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: volume-controller
+  namespace: dsc
+spec:
+  selector:
+    matchLabels:
+      daemonset: volumectl
+  template:
+    metadata:
+      name: vol-volume-controller
+      labels:
+        daemonset: volumectl
+    spec:
+      serviceAccount: volume-controller
+      hostPID: true
+      containers:
+      - name: volume-volume-container
+        image: volume-controller
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: fuse-targets
+          mountPath: /mnt/fuse/targets
+          mountPropagation: Bidirectional
+        - name: local-sources
+          mountPath: /mnt/fuse/sources/local
+        - name: kubelet-plugins
+          mountPath: /var/lib/kubelet/plugins
+          mountPropagation: HostToContainer
+        - name: docker-overlay2
+          mountPath: /var/lib/docker/overlay2
+          readOnly: true
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+          readOnly: true
+        - name: shadowy-sock
+          mountPath: /var/run/dsc
+      volumes:
+      - name: fuse-targets
+        hostPath:
+          path: /mnt/fuse/targets
+      - name: local-sources
+        hostPath:
+          path: /mnt/fuse/sources/local
+      - name: kubelet-plugins
+        hostPath:
+          path: /var/lib/kubelet/plugins
+      - name: docker-overlay2
+        hostPath:
+          path: /var/lib/docker/overlay2
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      - name: shadowy-sock
+        hostPath:
+          path: /var/run/dsc

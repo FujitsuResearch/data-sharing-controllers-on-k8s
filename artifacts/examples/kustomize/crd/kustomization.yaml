@@ -1,0 +1,4 @@
+resources:
+- message_queue.yaml
+- rdb_data.yaml
+- lifetime.yaml

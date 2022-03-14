@@ -1,0 +1,3 @@
+resources:
+- secret.yaml   # Comment out this line if a user is created by the 'Strimzi' Kafka cluster
+- message_queue.yaml

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-server
+  namespace: dsc
+  labels:
+    deployment: redis-server
+spec:
+  selector:
+    matchLabels:
+      app: redis-server-pod
+  template:
+    metadata:
+      labels:
+        app: redis-server-pod
+    spec:
+      containers:
+      - name: redis-server
+        image: redis
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-vol

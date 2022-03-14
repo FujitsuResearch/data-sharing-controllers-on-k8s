@@ -1,0 +1,19 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: policy-validation-webhook
+webhooks:
+  - name: policy-validator.dsc.io
+    clientConfig:
+      service:
+        name: policy-validator
+        namespace: dsc
+        path: "/lcm/policy"
+    rules:
+      - operations: [ "*" ]
+        apiGroups: ["lifetimes.dsc"]
+        apiVersions: ["v1alpha1"]
+        resources: ["datalifetimes"]
+    admissionReviewVersions:
+      - "v1"
+    sideEffects: None

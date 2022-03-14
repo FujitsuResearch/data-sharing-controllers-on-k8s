@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: policy-validator
+subjects:
+- kind: ServiceAccount
+  namespace: dsc
+  name: policy-validator
+roleRef:
+  kind: ClusterRole
+  name: policy-validator
+  apiGroup: rbac.authorization.k8s.io

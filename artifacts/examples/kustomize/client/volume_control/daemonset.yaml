@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: volume-controller-client
+  namespace: dsc
+spec:
+  selector:
+    matchLabels:
+      daemonset: volumectl
+  template:
+    metadata:
+      name: volume-controller-client
+      labels:
+        daemonset: volumectl
+    spec:
+      containers:
+      - name: volumectl-container
+        image: volumectl
+        command:
+        - /usr/bin/tail
+        args:
+        - -f
+        - /dev/null
+        volumeMounts:
+        - name: shadowy-sock
+          mountPath: /var/run/dsc/volume-controller.sock
+          readOnly: true
+      volumes:
+      - name: shadowy-sock
+        hostPath:
+          type: Socket
+          path: /var/run/dsc/volume-controller.sock

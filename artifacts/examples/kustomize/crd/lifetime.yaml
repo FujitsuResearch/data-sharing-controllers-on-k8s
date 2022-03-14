@@ -1,0 +1,173 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: datalifetimes.lifetimes.dsc
+spec:
+  group: lifetimes.dsc
+  versions:
+  - name: v1alpha1 
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              trigger:
+                type: object
+                properties:
+                  startTime:
+                    type: string
+                    format: date-time
+                  endTime:
+                    type: string
+                    format: date-time
+              inputData:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    messageQueueSubscriber:
+                      type: object
+                      properties:
+                        messageQueueRef:
+                          type: object
+                          properties:
+                            namespace:
+                              type: string
+                            name:
+                              type: string
+                        maxBatchBytes:
+                          type: integer
+                    fileSystemSpec:
+                      type: object
+                      properties:
+                        fromPersistentVolumeClaimRef:
+                          type: object
+                          properties:
+                            namespace:
+                              type: string
+                            name:
+                              type: string
+                        toPersistentVolumeClaimRef:
+                          type: object
+                          properties:
+                            namespace:
+                              type: string
+                            name:
+                              type: string
+                        allowedExecutables:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              cmdAbsolutePath:
+                                type: string
+                              checksum:
+                                type: string
+                              writable:
+                                type: boolean
+                              scripts:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    absolutePath:
+                                      type: string
+                                    checksum:
+                                      type: string
+                                    writable:
+                                      type: boolean
+                                    relativePathToInitWorkDir:
+                                      type: string
+                    rdbSpec:
+                      type: object
+              outputData:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    messageQueuePublisher:
+                      type: object
+                      properties:
+                        messageQueueRef:
+                          type: object
+                          properties:
+                            namespace:
+                              type: string
+                            name:
+                              type: string
+                        maxBatchBytes:
+                          type: integer
+                        updatePublishChannelBufferSize:
+                          type: integer
+                    fileSystemSpec:
+                      type: object
+                      properties:
+                        persistentVolumeClaimRef:
+                          type: object
+                          properties:
+                            namespace:
+                              type: string
+                            name:
+                              type: string
+                        allowedExecutables:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              cmdAbsolutePath:
+                                type: string
+                              checksum:
+                                type: string
+                              writable:
+                                type: boolean
+                              scripts:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    absolutePath:
+                                      type: string
+                                    checksum:
+                                      type: string
+                                    writable:
+                                      type: boolean
+                                    relativePathToInitWorkDir:
+                                      type: string
+                    rdbSpec:
+                      type: object
+              deletePolcy: 
+                type: string
+                enum:
+                - chmod
+                - rm
+          status:
+            type: object
+            properties:
+              provider:
+                type: object
+                properties:
+                  lastUpdatedAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+              consumer:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    lastUpdatedAt:
+                      type: string
+                      format: date-time
+                    expiredAt:
+                      type: string
+                      format: date-time
+                      nullable: true
+  names:
+    kind: DataLifetime
+    singular: datalifetime
+    plural: datalifetimes
+  scope: Namespaced

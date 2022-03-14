@@ -1,0 +1,6 @@
+bases:
+- ../base
+
+patchesStrategicMerge:
+- admissionregistration.yaml
+- webhook-tls.yaml

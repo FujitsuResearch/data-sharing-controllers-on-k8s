@@ -1,0 +1,10 @@
+apiVersion: core.dsc/v1alpha1
+kind: MessageQueue
+metadata:
+  name: sample-message-queue-2
+spec:
+  brokers: # broker addresses, e.g. "127.0.0.1:9092"
+  -
+  saslRef:
+    namespace: default
+    name: message-queue-secret-2

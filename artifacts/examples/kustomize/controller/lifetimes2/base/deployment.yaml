@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debian-2
+  labels:
+    app: debian-2-app
+spec:
+  selector:
+    matchLabels:
+      deployment: debian-2-deploy
+  template:
+    metadata:
+      labels:
+        deployment: debian-2-deploy
+    spec:
+      containers:
+      - name: service-container
+        image: service-container
+        command:
+        - /usr/bin/tail
+        args:
+        - -f
+        - /dev/null
+        volumeMounts:
+        - name: target-data
+          mountPath: /tmp/target
+      volumes:
+      - name: target-data
+        persistentVolumeClaim:
+          claimName: remote-vol-2

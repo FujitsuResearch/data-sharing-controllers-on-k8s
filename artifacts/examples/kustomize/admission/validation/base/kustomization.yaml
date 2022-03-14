@@ -1,0 +1,12 @@
+resources:
+- admissionregistration.yaml
+- service.yaml
+- service_account.yaml
+- role.yaml
+- rolebinding.yaml
+- deployment.yaml
+
+images:
+- name: policy-validator
+  # Specify the name of your policy-validator in a docker registry
+  newName:

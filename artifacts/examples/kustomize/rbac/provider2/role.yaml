@@ -1,0 +1,32 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: default
+  name: provider-lifetime-controller-2
+rules:
+- apiGroups:
+  - "lifetimes.dsc"
+  resources:
+  - "datalifetimes"
+  verbs:
+  - "*"
+- apiGroups:
+  - "core.dsc"
+  resources:
+  - "messagequeues"
+  resourceNames:
+  - "sample-message-queue-2"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - "message-queue-secret-2"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"

@@ -1,0 +1,4 @@
+resources:
+- ../base
+- service_account.yaml
+- service_rolebinding.yaml

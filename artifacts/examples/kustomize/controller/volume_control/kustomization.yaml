@@ -1,0 +1,10 @@
+resources:
+- service_account.yaml
+- role.yaml
+- rolebinding.yaml
+- daemonset.yaml
+
+images:
+- name: volume-controller
+  # Specify the name of your volume-controller in a docker registry
+  newName: 

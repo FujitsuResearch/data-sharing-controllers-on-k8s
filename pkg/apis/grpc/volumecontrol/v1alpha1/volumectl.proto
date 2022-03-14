@@ -1,0 +1,128 @@
+// Copyright (c) 2022 Fujitsu Limited
+
+syntax = "proto3";
+
+option go_package = "pkg/apis/grpc/volumecontrol/v1alpha1";
+
+service VolumeControl {
+	rpc Initialize(InitializeRequest) returns (InitializeResponse) ;
+	rpc Finalize(FinalizeRequest) returns (FinalizeResponse) ;
+	rpc Start(StartRequest) returns (StartResponse) ;
+	rpc Stop(StopRequest) returns (StopResponse) ;
+
+	rpc UpdateAllowedExecutables(UpdateAllowedExecutablesRequest) returns (UpdateAllowedExecutablesResponse) ;
+	rpc UpdateMessageQueueConfig(UpdateMessageQueueConfigRequest) returns (UpdateMessageQueueConfigResponse) ;
+}
+
+message ExternalAllowedScript {
+	string absolute_path = 1;
+	bool writable = 2;
+	string relative_path_to_init_work_dir = 3;
+}
+
+message ExternalAllowedExecutable {
+	string command_absolute_path = 1;
+	string with_resident_command_absolute_path = 2;
+	bool writable = 3;
+	bool are_all_processes_allowed_in_namespace = 4;
+	bool is_host_process = 5;
+	string mount_namespace_id = 6;
+	repeated ExternalAllowedScript external_allowed_scripts = 7;
+}
+
+message InitializeRequest {
+	string fuse_source_path = 1;
+	repeated ExternalAllowedExecutable external_allowed_executables = 2;
+	string csi_volume_handle = 3;
+	string local_fuse_mounts_host_root_dir = 4;
+	bool disable_usage_control = 5;
+}
+
+message InitializeResponse {
+	string fuse_mount_point_dir = 1;
+}
+
+message FinalizeRequest {
+	string fuse_mount_point_dir = 1;
+	bool force = 2;
+}
+
+message FinalizeResponse {
+}
+
+message Script {
+	bytes checksum = 1;
+	bool writable = 2;
+	string relative_path_to_init_work_dir = 3;
+}
+
+message Executable {
+	bytes checksum = 1;
+	bool writable = 2;
+	map<string,Script> scripts = 3;
+}
+
+message MessageQueue {
+	repeated string brokers = 1;
+	string user = 2;
+	string password = 3;
+	string topic = 4;
+	string compression_codec = 5;
+	string max_batch_bytes = 6;
+	string update_publish_channel_buffer_size = 7;
+}
+
+message StartRequest {
+	string pod_namespace = 1;
+	string pod_name = 2;
+	string data_container_name = 3;
+	string pvc_key = 4;
+	map<string, Executable> allowed_executables = 5;
+	MessageQueue message_queue_update_publisher = 6;
+}
+
+message StartResponse {
+	string mount_point = 1;
+	bool usage_control_enabled = 2;
+	bool message_queue_publisher_enabled = 3;
+}
+
+message ExecutablePaths {
+	repeated string paths = 1;
+}
+
+message StopRequest {
+	string pod_namespace = 1;
+	string pod_name = 2;
+	map<string, ExecutablePaths> mount_point_to_executable_paths = 3;
+	string mount_point = 4;
+}
+
+message StopResponse {
+}
+
+message ExecutablesDiffs {
+	map<string, Executable> added_and_updated = 1;
+	repeated string deleted_paths = 2;
+}
+
+
+message UpdateAllowedExecutablesRequest {
+	string pod_namespace = 1;
+	string pod_name = 2;
+	map<string, ExecutablesDiffs> executables_diffs = 3;
+}
+
+message UpdateAllowedExecutablesResponse {
+	map<string, string> pvc_key_to_mount_point = 1;
+}
+
+message UpdateMessageQueueConfigRequest {
+	string pod_namespace = 1;
+	string pod_name = 2;
+	map<string, MessageQueue> message_queue_diffs = 3;
+}
+
+message UpdateMessageQueueConfigResponse {
+	map<string, string> pvc_key_to_mount_point = 1;
+}

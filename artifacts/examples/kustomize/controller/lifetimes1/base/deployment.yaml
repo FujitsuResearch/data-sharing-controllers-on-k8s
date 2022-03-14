@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debian-1
+  labels:
+    app: debian-1-app
+spec:
+  selector:
+    matchLabels:
+      deployment: debian-1-deploy
+  template:
+    metadata:
+      labels:
+        deployment: debian-1-deploy
+    spec:
+      containers:
+      - name: service-container
+        image: service-container
+        command:
+        - /usr/bin/tail
+        args:
+        - -f
+        - /dev/null
+        volumeMounts:
+        - name: target-data1
+          mountPath: /tmp/target1
+        - name: target-data2
+          mountPath: /tmp/target2
+      volumes:
+      - name: target-data1
+        persistentVolumeClaim:
+          claimName: remote-vol-1
+      - name: target-data2
+        persistentVolumeClaim:
+          claimName: remote-vol-2

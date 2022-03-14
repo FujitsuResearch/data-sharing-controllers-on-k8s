@@ -1,0 +1,46 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: default
+  name: consumer-lifetime-controller-0
+rules:
+- apiGroups:
+  - "lifetimes.dsc"
+  resources:
+  - "datalifetimes"
+  verbs:
+  - "*"
+- apiGroups:
+  - ""
+  resources:
+  - "events"
+  verbs:
+  - "*"
+- apiGroups:
+  - "core.dsc"
+  resources:
+  - "messagequeues"
+  resourceNames:
+  - "sample-message-queue-1"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - "message-queue-secret-1"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"
+- apiGroups:
+  - ""
+  resources:
+  - "pods"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"

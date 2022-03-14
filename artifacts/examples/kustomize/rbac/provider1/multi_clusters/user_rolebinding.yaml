@@ -1,0 +1,13 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: default
+  name: provider-lifetime-controller-1
+subjects:
+- kind: User
+  name: # user account name
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: provider-lifetime-controller-1
+  apiGroup: rbac.authorization.k8s.io
