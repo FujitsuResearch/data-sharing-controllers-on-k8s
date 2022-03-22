@@ -101,3 +101,8 @@ $ make distclean
 [examples]: artifacts/examples
 [kafka-go]: https://github.com/segmentio/kafka-go
 [kafka-go-test]: https://github.com/segmentio/kafka-go#testing
+
+
+
+# Contact
+contact-dscok@cs.jp.fujitsu.com
